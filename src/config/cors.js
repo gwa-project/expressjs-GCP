@@ -12,9 +12,7 @@ export const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5500',
   'http://127.0.0.1:8080',
-  'file://',
-  'https://chatgpl.do.my.id',
-  'https://do.my.id',
+  'https://rentalcar.gilarya.my.id',
 ];
 
 // CORS options untuk Express
