@@ -3,7 +3,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import functions from '@google-cloud/functions-framework';
 
 import { connectDB, syncDatabase } from './lib/db.js';
 import { ensureDefaultAdmin, ensureDefaultContent } from './lib/seed.js';
@@ -51,28 +50,18 @@ async function ensureInitialized() {
   }
 }
 
-if (process.env.NODE_ENV !== 'production') {
-  ensureInitialized()
-    .then(() => {
-      const port = process.env.PORT || 8080;
-      app.listen(port, () => {
-        console.log(`Sena Rencar API berjalan di port ${port}`);
-      });
-    })
-    .catch((err) => {
-      console.error('Gagal menjalankan server', err);
-      process.exit(1);
+// Initialize and start server
+ensureInitialized()
+  .then(() => {
+    const port = process.env.PORT || 8080;
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`Sena Rencar API running on port ${port}`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
-}
-
-functions.http('senaExpress', async (req, res) => {
-  try {
-    await ensureInitialized();
-    app(req, res);
-  } catch (err) {
-    console.error('Gagal menangani request', err);
-    res.status(500).json({ success: false, error: 'Terjadi error pada server' });
-  }
-});
+  })
+  .catch((err) => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  });
 
 export default app;

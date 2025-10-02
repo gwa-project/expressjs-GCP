@@ -1,7 +1,7 @@
 ﻿{
   "name": "expressjs-gcp",
   "version": "1.0.0",
-  "description": "Express API for Sena Rencar deployed to Google Cloud Functions/Run",
+  "description": "Express API for Sena Rencar deployed to Google Cloud Run",
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
@@ -11,7 +11,6 @@
     "test:db": "node scripts/test-db.js"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.4.0",
     "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
