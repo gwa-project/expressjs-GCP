@@ -1,0 +1,33 @@
+﻿{
+  "name": "expressjs-gcp",
+  "version": "1.0.0",
+  "description": "Express API for Sena Rencar deployed to Google Cloud Functions/Run",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "build": "echo \"No build step required\"",
+    "keygen": "node scripts/keygen.js",
+    "test:db": "node scripts/test-db.js"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.0",
+    "axios": "^1.6.7",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "google-auth-library": "^9.6.3",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "paseto": "^3.1.4",
+    "pg": "^8.11.3",
+    "sequelize": "^6.35.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
