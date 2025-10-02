@@ -22,21 +22,11 @@ const User = getSequelize().define(
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    picture: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    googleId: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      unique: true,
-      field: 'google_id'
-    },
     role: {
       type: DataTypes.ENUM('user', 'admin'),
       defaultValue: 'user'
     },
-    // For regular username/password login (backward compatibility)
+    // Username/password login
     username: {
       type: DataTypes.STRING(100),
       allowNull: true,
