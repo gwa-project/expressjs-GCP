@@ -31,6 +31,14 @@ const Poster = getSequelize().define(
     tone: {
       type: DataTypes.TEXT,
       defaultValue: ''
+    },
+    image: {
+      type: DataTypes.TEXT,
+      defaultValue: ''
+    },
+    description: {
+      type: DataTypes.TEXT,
+      defaultValue: ''
     }
   },
   {

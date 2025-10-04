@@ -3,5 +3,8 @@
 npm-debug.log
 dist
 
+# Uploads
+uploads/
+
 # Tutorial contains sensitive information
 TUTORIAL.md

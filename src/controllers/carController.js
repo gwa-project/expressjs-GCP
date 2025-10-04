@@ -11,7 +11,7 @@ function normalizeHighlight(input) {
     .filter(Boolean);
 }
 
-function buildPayload(body = {}) {
+function buildPayload(body = {}, file = null) {
   return {
     name: body.name,
     category: body.category,
@@ -19,7 +19,7 @@ function buildPayload(body = {}) {
     luggage: Number(body.luggage) || 0,
     price: body.price,
     driverIncluded: body.driverIncluded !== undefined ? Boolean(body.driverIncluded) : true,
-    image: body.image || '',
+    image: file ? `/uploads/cars/${file.filename}` : (body.image || ''),
     highlight: normalizeHighlight(body.highlight),
     description: body.description || ''
   };
@@ -31,7 +31,7 @@ export async function getCars(req, res) {
 }
 
 export async function createCar(req, res) {
-  const payload = buildPayload(req.body);
+  const payload = buildPayload(req.body, req.file);
   if (!payload.name || !payload.category || !payload.price) {
     return res.status(400).json({ success: false, error: 'Nama, kategori, dan harga wajib diisi' });
   }
@@ -41,11 +41,16 @@ export async function createCar(req, res) {
 
 export async function updateCar(req, res) {
   const { id } = req.params;
-  const payload = buildPayload(req.body);
-
   const car = await Car.findByPk(id);
   if (!car) {
     return res.status(404).json({ success: false, error: 'Armada tidak ditemukan' });
+  }
+
+  const payload = buildPayload(req.body, req.file);
+
+  // Jika tidak ada file upload, pertahankan image lama
+  if (!req.file && !req.body.image) {
+    payload.image = car.image;
   }
 
   await car.update(payload);
