@@ -1,4 +1,4 @@
-import { V4 } from 'paseto';
+import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
 /**
@@ -45,47 +45,35 @@ export function generatePasetoKeyFromPassphrase(passphrase) {
 }
 
 /**
- * Create a PASETO token with claims
+ * Create a JWT token with claims (fallback dari PASETO)
  * @param {Object} payload - Token claims (sub, email, role, etc.)
  * @param {string} expiresIn - Expiration time (e.g., '8h', '1d')
  */
 export async function createPasetoToken(payload, expiresIn = '8h') {
-  const key = getPasetoKey();
+  const secret = process.env.PRKEY || 'fallback-secret-key';
 
-  // Parse expiration time
-  const expirationMs = parseExpirationTime(expiresIn);
-  const expirationDate = new Date(Date.now() + expirationMs);
+  const token = jwt.sign(
+    {
+      ...payload,
+      iss: 'sena-rencar-api',
+    },
+    secret,
+    { expiresIn }
+  );
 
-  const claims = {
-    ...payload,
-    iat: new Date().toISOString(),
-    exp: expirationDate.toISOString(),
-    iss: 'sena-rencar-api',
-  };
-
-  const token = await V4.encrypt(claims, key);
   return token;
 }
 
 /**
- * Verify and decode a PASETO token
- * @param {string} token - PASETO token string
+ * Verify and decode a JWT token (fallback dari PASETO)
+ * @param {string} token - JWT token string
  * @returns {Object} Decoded payload
  */
 export async function verifyPasetoToken(token) {
-  const key = getPasetoKey();
+  const secret = process.env.PRKEY || 'fallback-secret-key';
 
   try {
-    const payload = await V4.decrypt(token, key);
-
-    // Check expiration
-    if (payload.exp) {
-      const expDate = new Date(payload.exp);
-      if (expDate < new Date()) {
-        throw new Error('Token has expired');
-      }
-    }
-
+    const payload = jwt.verify(token, secret);
     return payload;
   } catch (err) {
     throw new Error(`Token verification failed: ${err.message}`);
