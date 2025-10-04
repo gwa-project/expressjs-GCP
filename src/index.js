@@ -26,7 +26,11 @@ app.use(express.json({ limit: '2mb' }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 // Serve static uploaded files
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// In production (Cloud Run), use /tmp directory
+const uploadPath = process.env.NODE_ENV === 'production'
+  ? '/tmp/uploads'
+  : path.join(__dirname, '../uploads');
+app.use('/uploads', express.static(uploadPath));
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

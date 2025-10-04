@@ -6,10 +6,15 @@ import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Use /tmp for Cloud Run (read-only filesystem)
+// In production, consider using Google Cloud Storage instead
+const isProduction = process.env.NODE_ENV === 'production';
+const baseUploadDir = isProduction ? '/tmp/uploads' : path.join(__dirname, '../../uploads');
+
 // Ensure upload directories exist
 const uploadDirs = {
-  cars: path.join(__dirname, '../../uploads/cars'),
-  posters: path.join(__dirname, '../../uploads/posters')
+  cars: path.join(baseUploadDir, 'cars'),
+  posters: path.join(baseUploadDir, 'posters')
 };
 
 Object.values(uploadDirs).forEach(dir => {
