@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import { createPasetoToken } from '../lib/paseto.js';
 
-const PASETO_EXPIRES = process.env.PASETO_EXPIRES_IN || '8h';
+const JWT_EXPIRES = '8h'; // JWT token expiration time
 
 /**
  * Regular username/password login
@@ -30,7 +30,7 @@ export async function login(req, res) {
   // Update last login (use snake_case for database column)
   await user.update({ last_login_at: new Date() });
 
-  // Generate PASETO token
+  // Generate JWT token
   const token = await createPasetoToken(
     {
       sub: user.id,
@@ -38,7 +38,7 @@ export async function login(req, res) {
       email: user.email,
       role: user.role
     },
-    PASETO_EXPIRES
+    JWT_EXPIRES
   );
 
   return res.json({
@@ -113,7 +113,7 @@ export async function refreshToken(req, res) {
       role: user.role,
       username: user.username
     },
-    PASETO_EXPIRES
+    JWT_EXPIRES
   );
 
   return res.json({
