@@ -1,4 +1,26 @@
 import Car from '../models/Car.js';
+import cloudinary from '../config/cloudinary.js';
+
+// Helper function to extract public_id from Cloudinary URL
+function getPublicIdFromUrl(url) {
+  if (!url || !url.includes('cloudinary.com')) return null;
+
+  // URL format: https://res.cloudinary.com/{cloud_name}/image/upload/v{version}/{folder}/{public_id}.{format}
+  const matches = url.match(/\/upload\/(?:v\d+\/)?(.+)\.\w+$/);
+  return matches ? matches[1] : null;
+}
+
+// Delete image from Cloudinary
+async function deleteCloudinaryImage(imageUrl) {
+  try {
+    const publicId = getPublicIdFromUrl(imageUrl);
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId);
+    }
+  } catch (error) {
+    console.error('Error deleting image from Cloudinary:', error);
+  }
+}
 
 function normalizeHighlight(input) {
   if (!input) return [];
@@ -19,7 +41,7 @@ function buildPayload(body = {}, file = null) {
     luggage: Number(body.luggage) || 0,
     price: body.price,
     driverIncluded: body.driverIncluded !== undefined ? Boolean(body.driverIncluded) : true,
-    image: file ? `/uploads/cars/${file.filename}` : (body.image || ''),
+    image: file ? file.path : (body.image || ''),
     highlight: normalizeHighlight(body.highlight),
     description: body.description || ''
   };
@@ -46,11 +68,17 @@ export async function updateCar(req, res) {
     return res.status(404).json({ success: false, error: 'Armada tidak ditemukan' });
   }
 
+  const oldImage = car.image;
   const payload = buildPayload(req.body, req.file);
 
   // Jika tidak ada file upload, pertahankan image lama
   if (!req.file && !req.body.image) {
     payload.image = car.image;
+  }
+
+  // Jika ada gambar baru, hapus gambar lama dari Cloudinary
+  if (req.file && oldImage) {
+    await deleteCloudinaryImage(oldImage);
   }
 
   await car.update(payload);
@@ -62,6 +90,11 @@ export async function deleteCar(req, res) {
   const car = await Car.findByPk(id);
   if (!car) {
     return res.status(404).json({ success: false, error: 'Armada tidak ditemukan' });
+  }
+
+  // Hapus gambar dari Cloudinary sebelum hapus data
+  if (car.image) {
+    await deleteCloudinaryImage(car.image);
   }
 
   await car.destroy();
