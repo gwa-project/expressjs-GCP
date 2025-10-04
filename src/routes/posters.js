@@ -6,10 +6,12 @@ import { upload } from '../middleware/upload.js';
 
 const router = Router();
 
-router.use(authenticate);
+// Public endpoint - no authentication required
 router.get('/', asyncHandler(getPosters));
-router.post('/', upload.single('image'), asyncHandler(createPoster));
-router.put('/:id', upload.single('image'), asyncHandler(updatePoster));
-router.delete('/:id', asyncHandler(deletePoster));
+
+// Protected endpoints - authentication required
+router.post('/', authenticate, upload.single('image'), asyncHandler(createPoster));
+router.put('/:id', authenticate, upload.single('image'), asyncHandler(updatePoster));
+router.delete('/:id', authenticate, asyncHandler(deletePoster));
 
 export default router;
