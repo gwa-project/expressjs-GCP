@@ -121,3 +121,75 @@ export async function refreshToken(req, res) {
     data: { token }
   });
 }
+
+/**
+ * Register new admin user
+ * Public endpoint untuk registrasi admin baru
+ */
+export async function register(req, res) {
+  const { username, email, name, password, role } = req.body || {};
+
+  // Validation
+  if (!username || !email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'Username, email, dan password wajib diisi'
+    });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: 'Password minimal 6 karakter'
+    });
+  }
+
+  try {
+    // Check if username or email already exists
+    const existingUser = await User.findOne({
+      where: {
+        [User.sequelize.Sequelize.Op.or]: [
+          { username },
+          { email }
+        ]
+      }
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: 'Username atau email sudah terdaftar'
+      });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
+    const newUser = await User.create({
+      username,
+      email,
+      name: name || username,
+      password: hashedPassword,
+      role: role || 'admin'
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Registrasi berhasil',
+      data: {
+        id: newUser.id,
+        username: newUser.username,
+        email: newUser.email,
+        name: newUser.name,
+        role: newUser.role
+      }
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Terjadi kesalahan saat registrasi'
+    });
+  }
+}

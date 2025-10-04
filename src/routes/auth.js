@@ -1,17 +1,16 @@
 import { Router } from 'express';
-import { login, getProfile, refreshToken } from '../controllers/authController.js';
+import { login, register, getProfile, refreshToken } from '../controllers/authController.js';
 import { asyncHandler } from '../middleware/asyncHandler.js';
 import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
 
-// Regular username/password login
+// Public routes
 router.post('/login', asyncHandler(login));
+router.post('/register', asyncHandler(register));
 
-// Get current user profile (protected)
+// Protected routes
 router.get('/profile', authenticate, asyncHandler(getProfile));
-
-// Refresh token (protected)
 router.post('/refresh', authenticate, asyncHandler(refreshToken));
 
 export default router;
