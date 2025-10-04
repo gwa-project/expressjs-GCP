@@ -27,8 +27,8 @@ export async function login(req, res) {
     return res.status(401).json({ success: false, error: 'Kredensial tidak valid' });
   }
 
-  // Update last login
-  await user.update({ lastLoginAt: new Date() });
+  // Update last login (use snake_case for database column)
+  await user.update({ last_login_at: new Date() });
 
   // Generate PASETO token
   const token = await createPasetoToken(
@@ -82,7 +82,7 @@ export async function getProfile(req, res) {
       name: user.name,
       role: user.role,
       username: user.username,
-      lastLoginAt: user.lastLoginAt
+      lastLoginAt: user.last_login_at
     }
   });
 }
