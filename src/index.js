@@ -11,6 +11,7 @@ import { ensureDefaultAdmin, ensureDefaultContent } from './lib/seed.js';
 import authRoutes from './routes/auth.js';
 import carRoutes from './routes/cars.js';
 import posterRoutes from './routes/posters.js';
+import chatRoutes from './routes/chat.js';
 import { corsOptions } from './config/cors.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -39,6 +40,7 @@ app.get('/health', (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/api/cars', carRoutes);
 app.use('/api/posters', posterRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, error: 'Endpoint tidak ditemukan' });
