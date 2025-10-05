@@ -1,8 +1,8 @@
-import OpenAI from 'openai';
+import Groq from 'groq-sdk';
 import Car from '../models/Car.js';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY
 });
 
 // System prompt dengan context tentang Sena Rencar
@@ -53,7 +53,7 @@ export async function chat(req, res) {
 
     const contextMessage = `ARMADA TERSEDIA:\n${carsContext}\n\nGunakan informasi di atas untuk menjawab pertanyaan customer tentang mobil yang tersedia.`;
 
-    // Build messages array untuk OpenAI
+    // Build messages array untuk Groq
     const messages = [
       { role: 'system', content: SYSTEM_PROMPT },
       { role: 'system', content: contextMessage },
@@ -61,14 +61,13 @@ export async function chat(req, res) {
       { role: 'user', content: message }
     ];
 
-    // Call OpenAI API
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini', // Atau gpt-3.5-turbo untuk lebih murah
+    // Call Groq API (super fast inference!)
+    const completion = await groq.chat.completions.create({
+      model: 'llama-3.1-8b-instant', // Fast & accurate model
       messages: messages,
       temperature: 0.7,
       max_tokens: 500,
-      presence_penalty: 0.6,
-      frequency_penalty: 0.3
+      top_p: 0.9
     });
 
     const reply = completion.choices[0].message.content;
@@ -84,11 +83,11 @@ export async function chat(req, res) {
   } catch (error) {
     console.error('Error in chat controller:', error);
 
-    // Handle OpenAI specific errors
-    if (error.code === 'insufficient_quota') {
+    // Handle Groq API errors
+    if (error.status === 429) {
       return res.status(503).json({
         success: false,
-        error: 'Layanan chat sedang tidak tersedia. Silakan coba lagi nanti.'
+        error: 'Terlalu banyak permintaan. Silakan tunggu sebentar.'
       });
     }
 
