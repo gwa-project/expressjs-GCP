@@ -10,7 +10,7 @@ import { connectDB, syncDatabase } from './lib/db.js';
 import { ensureDefaultAdmin, ensureDefaultContent } from './lib/seed.js';
 import authRoutes from './routes/auth.js';
 import carRoutes from './routes/cars.js';
-import posterRoutes from './routes/posters.js';
+import bannerRoutes from './routes/banners.js';
 import chatRoutes from './routes/chat.js';
 import { corsOptions } from './config/cors.js';
 
@@ -39,7 +39,7 @@ app.get('/health', (req, res) => {
 
 app.use('/auth', authRoutes);
 app.use('/api/cars', carRoutes);
-app.use('/api/posters', posterRoutes);
+app.use('/api/banners', bannerRoutes);
 app.use('/api/chat', chatRoutes);
 
 app.use((req, res) => {

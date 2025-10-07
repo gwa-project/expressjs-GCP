@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import Car from '../models/Car.js';
-import Poster from '../models/Poster.js';
+import Banner from '../models/Banner.js';
 
 const defaultCars = [
   {
@@ -61,20 +61,24 @@ const defaultCars = [
   }
 ];
 
-const defaultPosters = [
+const defaultBanners = [
   {
     title: 'Rent A Car Banner',
     channel: 'Homepage Hero',
     format: '1920 x 1080',
     url: '/assets/rent-a-car-banner.jpg',
-    tone: 'Luxury & Professional'
+    image: '/assets/Rent-A-Car-Banner.jpg',
+    tone: 'Luxury & Professional',
+    description: 'Banner utama rental mobil premium'
   },
   {
     title: 'Tour Package Highlight',
     channel: 'Social Campaign',
     format: '1080 x 1350',
     url: '/assets/paket-wisata.jpg',
-    tone: 'Warm & Experiential'
+    image: '/assets/paket-wisata.jpg',
+    tone: 'Warm & Experiential',
+    description: 'Paket wisata kurasi untuk perjalanan tak terlupakan'
   }
 ];
 
@@ -121,9 +125,9 @@ export async function ensureDefaultContent() {
     console.log('[seed] Default car data added');
   }
 
-  const posterCount = await Poster.count();
-  if (posterCount === 0) {
-    await Poster.bulkCreate(defaultPosters);
-    console.log('[seed] Default poster data added');
+  const bannerCount = await Banner.count();
+  if (bannerCount === 0) {
+    await Banner.bulkCreate(defaultBanners);
+    console.log('[seed] Default banner data added');
   }
 }
