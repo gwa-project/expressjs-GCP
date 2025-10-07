@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import Car from '../models/Car.js';
 import Banner from '../models/Banner.js';
+import Package from '../models/Package.js';
 
 const defaultCars = [
   {
@@ -82,6 +83,36 @@ const defaultBanners = [
   }
 ];
 
+const defaultPackages = [
+  {
+    name: 'Bandung Luxury Escape',
+    duration: '3 Hari 2 Malam',
+    description: 'Eksplorasi Bandung dengan pengalaman kuliner premium dan hidden gems eksklusif.',
+    price: '5.9 Juta',
+    category: 'City Tour',
+    image: '/assets/paket-wisata.jpg',
+    features: ['Hotel 5★', 'Private guide', 'Culinary journey']
+  },
+  {
+    name: 'Bali Honeymoon Signature',
+    duration: '4 Hari 3 Malam',
+    description: 'Paket bulan madu intim dengan itinerary personal dan dokumentasi profesional.',
+    price: '12.5 Juta',
+    category: 'Honeymoon',
+    image: '/assets/paket-wisata.jpg',
+    features: ['Sunset cruise', 'Couple spa', 'Fine dining']
+  },
+  {
+    name: 'Yogyakarta Heritage Journey',
+    duration: '2 Hari 1 Malam',
+    description: 'Meresapi kekayaan budaya klasik dengan akses eksklusif dan storyteller lokal.',
+    price: '4.2 Juta',
+    category: 'Cultural',
+    image: '/assets/paket-wisata.jpg',
+    features: ['Sunrise Borobudur', 'Royal lunch', 'Cultural workshop']
+  }
+];
+
 /**
  * Ensure default admin user exists
  * Admin credentials hardcoded - tidak pakai env vars
@@ -129,5 +160,11 @@ export async function ensureDefaultContent() {
   if (bannerCount === 0) {
     await Banner.bulkCreate(defaultBanners);
     console.log('[seed] Default banner data added');
+  }
+
+  const packageCount = await Package.count();
+  if (packageCount === 0) {
+    await Package.bulkCreate(defaultPackages);
+    console.log('[seed] Default package data added');
   }
 }
