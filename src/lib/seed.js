@@ -36,6 +36,28 @@ const defaultCars = [
     image: '/assets/rent-a-car-banner.jpg',
     highlight: ['4x4 capability', 'Premium safety', 'Wireless charger'],
     description: 'Siap menemani perjalanan luar kota dengan performa bertenaga dan fitur lengkap.'
+  },
+  {
+    name: 'Toyota Avanza',
+    category: 'Economy MPV',
+    seats: 7,
+    luggage: 3,
+    price: '350K',
+    driverIncluded: false,
+    image: '/assets/rent-a-car-banner.jpg',
+    highlight: ['Fuel efficient', 'Easy to drive', 'Spacious cabin'],
+    description: 'Pilihan ekonomis untuk perjalanan keluarga dengan sistem lepas kunci.'
+  },
+  {
+    name: 'Honda Brio',
+    category: 'City Car',
+    seats: 4,
+    luggage: 2,
+    price: '250K',
+    driverIncluded: false,
+    image: '/assets/rent-a-car-banner.jpg',
+    highlight: ['Compact', 'Low fuel consumption', 'Easy parking'],
+    description: 'Mobil city car ideal untuk mobilitas dalam kota dengan lepas kunci.'
   }
 ];
 

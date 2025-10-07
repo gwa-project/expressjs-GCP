@@ -48,7 +48,18 @@ function buildPayload(body = {}, file = null) {
 }
 
 export async function getCars(req, res) {
-  const cars = await Car.findAll({ order: [['createdAt', 'DESC']] });
+  const { driverIncluded } = req.query;
+
+  // Build where clause
+  const where = {};
+  if (driverIncluded !== undefined) {
+    where.driverIncluded = driverIncluded === 'true' || driverIncluded === true;
+  }
+
+  const cars = await Car.findAll({
+    where,
+    order: [['createdAt', 'DESC']]
+  });
   return res.json({ success: true, data: cars });
 }
 
