@@ -40,7 +40,9 @@ function buildPayload(body = {}, file = null) {
     seats: Number(body.seats) || 0,
     luggage: Number(body.luggage) || 0,
     price: body.price,
-    driverIncluded: body.driverIncluded !== undefined ? Boolean(body.driverIncluded) : true,
+    driverIncluded: body.driverIncluded !== undefined
+      ? (body.driverIncluded === 'true' || body.driverIncluded === true)
+      : true,
     image: file ? file.path : (body.image || ''),
     highlight: normalizeHighlight(body.highlight),
     description: body.description || ''
